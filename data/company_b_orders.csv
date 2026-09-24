@@ -1,0 +1,8 @@
+order_id,created_at,buyer_id,location,total_price,order_state
+2001,2026-09-18,B001,North,1800.00,paid
+2002,2026-09-18,B002,South,950.50,paid
+2003,2026-09-19,B003,North,3200.00,paid
+2004,2026-09-19,B001,South,1100.25,paid
+2005,2026-09-19,B004,North,750.00,cancelled
+2006,2026-09-20,B002,South,2400.00,paid
+2007,2026-09-20,B005,North,1350.75,paid

@@ -1,9 +1,13 @@
 from app.repository import BusinessRepository
 from app.models import RevenueArgs
 from datetime import date
+from app.config import company_a_mapping
 
 
-repository = BusinessRepository("data/company_a_sales.csv")
+repository = BusinessRepository(
+    "data/company_a_sales.csv",
+    company_a_mapping
+)
 
 
 def get_revenue(revenue_date: date) -> dict:
