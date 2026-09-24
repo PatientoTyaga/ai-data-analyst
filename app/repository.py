@@ -1,13 +1,29 @@
+import csv
 from datetime import date
+
 
 class BusinessRepository:
 
-    def __init__(self):
-        self.revenue_data = {
-            date(2026, 9, 18): 18452.73,
-            date(2026, 9, 19): 21340.50,
-            date(2026, 9, 20): 19780.25
-        }
+    def __init__(self, file_path: str):
+        self.file_path = file_path
 
-    def get_revenue(self, revenue_date: date) -> float | None:
-        return self.revenue_data.get(revenue_date)
+    def get_revenue(self, revenue_date: date):
+        total_revenue = 0.0
+        date_found = False
+
+        with open(self.file_path, mode="r") as file:
+            reader = csv.DictReader(file)
+
+            for row in reader:
+                transaction_date = date.fromisoformat(row["transaction_date"])
+
+                if transaction_date == revenue_date:
+                    date_found = True
+
+                    if row["status"] == "completed":
+                        total_revenue += float(row["amount"])
+
+        if not date_found:
+            return None
+
+        return total_revenue

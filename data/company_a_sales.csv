@@ -1,0 +1,11 @@
+transaction_id,transaction_date,customer_id,region,amount,status
+1001,2026-09-18,C001,West,1250.50,completed
+1002,2026-09-18,C002,East,3200.00,completed
+1003,2026-09-18,C003,West,875.25,completed
+1004,2026-09-19,C001,West,2100.00,completed
+1005,2026-09-19,C004,Central,4500.50,completed
+1006,2026-09-19,C005,East,1275.75,completed
+1007,2026-09-20,C002,East,3300.00,completed
+1008,2026-09-20,C006,Central,950.25,completed
+1009,2026-09-20,C007,West,1725.00,completed
+1010,2026-09-20,C008,West,600.00,cancelled

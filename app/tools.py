@@ -3,11 +3,23 @@ from app.models import RevenueArgs
 from datetime import date
 
 
-repository = BusinessRepository()
+repository = BusinessRepository("data/company_a_sales.csv")
 
 
-def get_revenue(revenue_date: date) -> float | None:
-    return repository.get_revenue(revenue_date)
+def get_revenue(revenue_date: date) -> dict:
+    revenue = repository.get_revenue(revenue_date)
+
+    if revenue is None:
+        return {
+            "success": False,
+            "error_code": "DATA_NOT_FOUND",
+            "message": f"No transaction data exists for {revenue_date}."
+        }
+
+    return {
+        "success": True,
+        "revenue": revenue
+    }
 
 get_revenue_tool = {
     "type": "function",
