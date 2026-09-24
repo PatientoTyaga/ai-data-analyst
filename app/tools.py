@@ -18,6 +18,27 @@ def get_revenue(company_id: str, revenue_date: date) -> dict:
         "success": True,
         "revenue": revenue
     }
+    
+def get_revenue_by_region(company_id: str, revenue_date: date) -> dict:
+    repository = get_repository(company_id)
+
+    revenue_by_region = repository.get_revenue_by_region(revenue_date)
+
+    if revenue_by_region is None:
+        return {
+            "success": False,
+            "error_code": "DATA_NOT_FOUND",
+            "message": f"No transaction data exists for {revenue_date}."
+        }
+
+    return {
+        "success": True,
+        "revenue_by_region": revenue_by_region
+    }
+    
+#-----------------------------------------
+# Tools
+#-----------------------------------------
 
 get_revenue_tool = {
     "type": "function",
@@ -35,12 +56,29 @@ get_revenue_tool = {
     }
 }
 
+get_revenue_by_region_tool = {
+    "type": "function",
+    "name": "get_revenue_by_region",
+    "description": "Gets the revenue breakdown by region for a specific date.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "revenue_date": {
+                "type": "string",
+                "description": "The date to retrieve regional revenue for, in YYYY-MM-DD format."
+            }
+        },
+        "required": ["revenue_date"]
+    }
+}
+
 #-----------------------------------------
 # function registry
 #-----------------------------------------
 
 tool_functions = {
-    "get_revenue": get_revenue
+    "get_revenue": get_revenue,
+    "get_revenue_by_region": get_revenue_by_region
 }
 
 
@@ -49,7 +87,8 @@ tool_functions = {
 #-----------------------------------------
 
 tool_validators = {
-    "get_revenue": RevenueArgs
+    "get_revenue": RevenueArgs,
+    "get_revenue_by_region": RevenueArgs
 }
 
 #-----------------------------------------
@@ -57,5 +96,6 @@ tool_validators = {
 #-----------------------------------------
 
 tools = [
-    get_revenue_tool
+    get_revenue_tool,
+    get_revenue_by_region_tool
 ]
