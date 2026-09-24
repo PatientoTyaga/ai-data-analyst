@@ -1,16 +1,10 @@
-from app.repository import BusinessRepository
 from app.models import RevenueArgs
 from datetime import date
-from app.config import company_a_mapping
+from app.repository_factory import get_repository
 
-
-repository = BusinessRepository(
-    "data/company_a_sales.csv",
-    company_a_mapping
-)
-
-
-def get_revenue(revenue_date: date) -> dict:
+def get_revenue(company_id: str, revenue_date: date) -> dict:
+    repository = get_repository(company_id)
+    
     revenue = repository.get_revenue(revenue_date)
 
     if revenue is None:

@@ -8,7 +8,7 @@ load_dotenv()
 client = genai.Client()
 
 
-def ask_agent(question: str):
+def ask_agent(company_id: str, question: str):
     interaction = client.interactions.create(
         model="gemini-3.6-flash",
         input=question,
@@ -42,7 +42,10 @@ def ask_agent(question: str):
 
                 function = tool_functions[step.name]
 
-                result = function(**validated_args.model_dump())
+                result = function(
+                    company_id=company_id,
+                    **validated_args.model_dump()
+                )
 
                 print("Tool result:", result)
 

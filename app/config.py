@@ -11,3 +11,14 @@ company_b_mapping = {
     "status": "order_state",
     "valid_status": "paid"
 }
+
+companies = {
+    "company_a": {
+        "file_path": "data/company_a_sales.csv",
+        "mapping": company_a_mapping
+    },
+    "company_b": {
+        "file_path": "data/company_b_orders.csv",
+        "mapping": company_b_mapping
+    }
+}
