@@ -3,7 +3,8 @@ company_a_mapping = {
     "revenue": "amount",
     "region": "region",
     "status": "status",
-    "valid_status": "completed"
+    "valid_status": "completed",
+    "cancelled_status": "cancelled"
 }
 
 company_b_mapping = {
@@ -11,7 +12,8 @@ company_b_mapping = {
     "revenue": "total_price",
     "region": "location",
     "status": "order_state",
-    "valid_status": "paid"
+    "valid_status": "paid",
+    "cancelled_status": "cancelled"
 }
 
 companies = {

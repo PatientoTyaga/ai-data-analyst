@@ -1,4 +1,4 @@
-from app.models import RevenueArgs, AverageRevenueArgs
+from app.models import RevenueArgs, AverageRevenueArgs, CancellationArgs
 from datetime import date
 from app.repository_factory import get_repository
 
@@ -56,6 +56,46 @@ def get_average_revenue(company_id: str, end_date: date, days: int) -> dict:
         "average_revenue": average_revenue,
         "days_requested": days
     }
+    
+def get_cancellations(company_id: str, cancellation_date: date) -> dict:
+    repository = get_repository(company_id)
+
+    cancellation_count = repository.get_cancellations(cancellation_date)
+
+    if cancellation_count is None:
+        return {
+            "success": False,
+            "error_code": "DATA_NOT_FOUND",
+            "message": f"No transaction data exists for {cancellation_date}."
+        }
+
+    return {
+        "success": True,
+        "cancellation_count": cancellation_count
+    }
+
+
+def get_cancellations_by_region(
+    company_id: str,
+    cancellation_date: date
+) -> dict:
+    repository = get_repository(company_id)
+
+    cancellations_by_region = repository.get_cancellations_by_region(
+        cancellation_date
+    )
+
+    if cancellations_by_region is None:
+        return {
+            "success": False,
+            "error_code": "DATA_NOT_FOUND",
+            "message": f"No transaction data exists for {cancellation_date}."
+        }
+
+    return {
+        "success": True,
+        "cancellations_by_region": cancellations_by_region
+    }
 #-----------------------------------------
 # Tools
 #-----------------------------------------
@@ -112,6 +152,38 @@ get_average_revenue_tool = {
     }
 }
 
+get_cancellations_tool = {
+    "type": "function",
+    "name": "get_cancellations",
+    "description": "Gets the total number of cancelled transactions for a specific date.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "cancellation_date": {
+                "type": "string",
+                "description": "The date to retrieve cancellations for, in YYYY-MM-DD format."
+            }
+        },
+        "required": ["cancellation_date"]
+    }
+}
+
+get_cancellations_by_region_tool = {
+    "type": "function",
+    "name": "get_cancellations_by_region",
+    "description": "Gets the number of cancelled transactions grouped by region for a specific date.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "cancellation_date": {
+                "type": "string",
+                "description": "The date to retrieve regional cancellations for, in YYYY-MM-DD format."
+            }
+        },
+        "required": ["cancellation_date"]
+    }
+}
+
 #-----------------------------------------
 # function registry
 #-----------------------------------------
@@ -119,9 +191,10 @@ get_average_revenue_tool = {
 tool_functions = {
     "get_revenue": get_revenue,
     "get_revenue_by_region": get_revenue_by_region,
-    "get_average_revenue": get_average_revenue
+    "get_average_revenue": get_average_revenue,
+    "get_cancellations": get_cancellations,
+    "get_cancellations_by_region": get_cancellations_by_region
 }
-
 
 #-----------------------------------------
 # Validation registry
@@ -130,7 +203,9 @@ tool_functions = {
 tool_validators = {
     "get_revenue": RevenueArgs,
     "get_revenue_by_region": RevenueArgs,
-    "get_average_revenue": AverageRevenueArgs
+    "get_average_revenue": AverageRevenueArgs,
+    "get_cancellations": CancellationArgs,
+    "get_cancellations_by_region": CancellationArgs
 }
 
 #-----------------------------------------
@@ -140,5 +215,7 @@ tool_validators = {
 tools = [
     get_revenue_tool,
     get_revenue_by_region_tool,
-    get_average_revenue_tool
+    get_average_revenue_tool,
+    get_cancellations_tool,
+    get_cancellations_by_region_tool
 ]

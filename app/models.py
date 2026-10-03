@@ -8,3 +8,6 @@ class RevenueArgs(BaseModel):
 class AverageRevenueArgs(BaseModel):
     end_date: date
     days: int = Field(gt=0)
+    
+class CancellationArgs(BaseModel):
+    cancellation_date: date
