@@ -58,3 +58,38 @@ class BusinessRepository:
             return None
 
         return revenue_by_region
+    
+    def get_average_revenue(self, end_date: date, days: int):
+        daily_revenues = {}
+
+        with open(self.file_path, mode="r") as file:
+            reader = csv.DictReader(file)
+
+            for row in reader:
+                transaction_date = date.fromisoformat(
+                    row[self.mapping["transaction_date"]]
+                )
+
+                if transaction_date <= end_date:
+                    if row[self.mapping["status"]] == self.mapping["valid_status"]:
+                        amount = float(row[self.mapping["revenue"]])
+
+                        daily_revenues[transaction_date] = (
+                            daily_revenues.get(transaction_date, 0.0) + amount
+                        )
+                        
+        if not daily_revenues:
+            return None
+
+        sorted_dates = sorted(daily_revenues.keys(), reverse=True)
+
+        selected_dates = sorted_dates[:days]
+
+        total_revenue = sum(
+            daily_revenues[revenue_date]
+            for revenue_date in selected_dates
+        )
+
+        average_revenue = total_revenue / len(selected_dates)
+
+        return average_revenue
