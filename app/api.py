@@ -1,4 +1,7 @@
-from fastapi import FastAPI, HTTPException
+import csv
+import io
+
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -44,6 +47,48 @@ def ask_question(request: AskRequest):
         raise HTTPException(
             status_code=503,
             detail="AI service is temporarily unavailable."
+        )
+        
+@app.post("/upload")
+async def upload_data(file: UploadFile = File(...)):
+    if not file.filename or not file.filename.endswith(".csv"):
+        raise HTTPException(
+            status_code=400,
+            detail="Only CSV files are currently supported."
+        )
+
+    contents = await file.read()
+
+    try:
+        text = contents.decode("utf-8")
+        reader = csv.DictReader(io.StringIO(text))
+
+        columns = reader.fieldnames
+
+        if not columns:
+            raise HTTPException(
+                status_code=400,
+                detail="CSV file does not contain column headers."
+            )
+
+        sample_rows = []
+
+        for index, row in enumerate(reader):
+            if index >= 5:
+                break
+
+            sample_rows.append(row)
+
+        return {
+            "filename": file.filename,
+            "columns": columns,
+            "sample_rows": sample_rows
+        }
+
+    except UnicodeDecodeError:
+        raise HTTPException(
+            status_code=400,
+            detail="Unable to read the CSV file."
         )
         
     
