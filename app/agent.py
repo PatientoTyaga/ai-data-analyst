@@ -1,11 +1,19 @@
 from google import genai
+from google.genai import types
 from pydantic import ValidationError
 from dotenv import load_dotenv
 
 from app.tools import tools, tool_functions, tool_validators
 
 load_dotenv()
-client = genai.Client()
+client = genai.Client(
+    http_options=types.HttpOptions(
+        timeout=30_000,
+        retry_options=types.HttpRetryOptions(
+            attempts=1
+        )
+    )
+)
 
 
 def ask_agent(company_id: str, question: str):
