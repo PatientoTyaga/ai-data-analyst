@@ -16,7 +16,7 @@ client = genai.Client(
 )
 
 
-def ask_agent(company_id: str, question: str):
+def ask_agent(company_id: str, question: str, repository=None):
     interaction = client.interactions.create(
         model="gemini-3.6-flash",
         input=question,
@@ -50,10 +50,17 @@ def ask_agent(company_id: str, question: str):
 
                 function = tool_functions[step.name]
 
-                result = function(
-                    company_id=company_id,
-                    **validated_args.model_dump()
-                )
+                if repository:
+                    result = function(
+                        company_id=company_id,
+                        repository=repository,
+                        **validated_args.model_dump()
+                    )
+                else:
+                    result = function(
+                        company_id=company_id,
+                        **validated_args.model_dump()
+                    )
 
                 print("Tool result:", result)
 

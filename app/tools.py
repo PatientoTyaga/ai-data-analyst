@@ -2,8 +2,14 @@ from app.models import RevenueArgs, AverageRevenueArgs, CancellationArgs
 from datetime import date
 from app.repository_factory import get_repository
 
-def get_revenue(company_id: str, revenue_date: date) -> dict:
-    repository = get_repository(company_id)
+def resolve_repository(company_id: str, repository=None):
+    if repository is not None:
+        return repository
+
+    return get_repository(company_id)
+
+def get_revenue(company_id: str, revenue_date: date, repository=None) -> dict:
+    repository = resolve_repository(company_id, repository)
     
     revenue = repository.get_revenue(revenue_date)
 
@@ -19,8 +25,8 @@ def get_revenue(company_id: str, revenue_date: date) -> dict:
         "revenue": revenue
     }
     
-def get_revenue_by_region(company_id: str, revenue_date: date) -> dict:
-    repository = get_repository(company_id)
+def get_revenue_by_region(company_id: str, revenue_date: date, repository=None) -> dict:
+    repository = resolve_repository(company_id, repository)
 
     revenue_by_region = repository.get_revenue_by_region(revenue_date)
 
@@ -36,8 +42,8 @@ def get_revenue_by_region(company_id: str, revenue_date: date) -> dict:
         "revenue_by_region": revenue_by_region
     }
     
-def get_average_revenue(company_id: str, end_date: date, days: int) -> dict:
-    repository = get_repository(company_id)
+def get_average_revenue(company_id: str, end_date: date, days: int, repository=None) -> dict:
+    repository = resolve_repository(company_id, repository)
 
     average_revenue = repository.get_average_revenue(
         end_date=end_date,
@@ -57,8 +63,8 @@ def get_average_revenue(company_id: str, end_date: date, days: int) -> dict:
         "days_requested": days
     }
     
-def get_cancellations(company_id: str, cancellation_date: date) -> dict:
-    repository = get_repository(company_id)
+def get_cancellations(company_id: str, cancellation_date: date, repository=None) -> dict:
+    repository = resolve_repository(company_id, repository)
 
     cancellation_count = repository.get_cancellations(cancellation_date)
 
@@ -77,9 +83,10 @@ def get_cancellations(company_id: str, cancellation_date: date) -> dict:
 
 def get_cancellations_by_region(
     company_id: str,
-    cancellation_date: date
+    cancellation_date: date,
+    repository=None
 ) -> dict:
-    repository = get_repository(company_id)
+    repository = resolve_repository(company_id, repository)
 
     cancellations_by_region = repository.get_cancellations_by_region(
         cancellation_date
