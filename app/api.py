@@ -113,7 +113,7 @@ def ask_question(request: AskRequest):
         
 @app.post("/upload")
 async def upload_data(file: UploadFile = File(...)):
-    if not file.filename or not file.filename.endswith(".csv"):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
         raise HTTPException(
             status_code=400,
             detail="Only CSV files are currently supported."
@@ -121,14 +121,20 @@ async def upload_data(file: UploadFile = File(...)):
 
     contents = await file.read()
     
+    max_file_size = 10 * 1024 * 1024
+
+    if len(contents) > max_file_size:
+        raise HTTPException(
+            status_code=413,
+            detail="CSV file must be 10 MB or smaller."
+        )
+    
     dataset_id = str(uuid4())
 
     upload_directory = Path("data/uploads")
     upload_directory.mkdir(parents=True, exist_ok=True)
 
     file_path = upload_directory / f"{dataset_id}.csv"
-
-    file_path.write_bytes(contents)
 
     try:
         text = contents.decode("utf-8")
@@ -149,6 +155,8 @@ async def upload_data(file: UploadFile = File(...)):
                 break
 
             sample_rows.append(row)
+            
+        file_path.write_bytes(contents)
 
         return {
             "dataset_id": dataset_id,
@@ -171,6 +179,47 @@ def save_mapping(request: MappingRequest):
         raise HTTPException(
             status_code=404,
             detail="Uploaded dataset was not found."
+        )
+        
+    with open(file_path, mode="r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        columns = reader.fieldnames or []
+
+    required_columns = [
+        request.transaction_date,
+        request.revenue,
+        request.region,
+        request.status,
+    ]
+
+    for column in required_columns:
+        if column not in columns:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Column '{column}' does not exist in the uploaded dataset."
+            )
+    
+    status_values = set()
+
+    with open(file_path, mode="r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            value = row.get(request.status)
+
+            if value:
+                status_values.add(value)
+                
+    if request.valid_status not in status_values:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Status value '{request.valid_status}' does not exist in the uploaded dataset."
+        )
+
+    if request.cancelled_status not in status_values:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Status value '{request.cancelled_status}' does not exist in the uploaded dataset."
         )
 
     mapping = {
