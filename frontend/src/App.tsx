@@ -2,6 +2,9 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import "./App.css";
 
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 type UploadResult = {
   dataset_id: string;
   filename: string;
@@ -44,7 +47,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/column-values",
+        `${API_URL}/column-values`,
         {
           method: "POST",
           headers: {
@@ -77,7 +80,7 @@ function App() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/mapping", {
+      const response = await fetch(`${API_URL}/mapping`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +115,7 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/ask", {
+      const response = await fetch(`${API_URL}/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -153,7 +156,7 @@ function App() {
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
-      const response = await fetch("http://127.0.0.1:8000/upload", {
+      const response = await fetch(`${API_URL}/upload`, {
         method: "POST",
         body: formData,
       });
@@ -385,7 +388,6 @@ function App() {
         </section>
       )}
 
-      
     </main>
   );
 }
