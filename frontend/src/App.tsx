@@ -230,7 +230,7 @@ function App() {
 
         <section>
           {columnMappings.map(([key, label]) => (
-            <div key={key}>
+            <div className="mapping-field" key={key}>
               <label htmlFor={key}>{label}</label>
 
               <select
@@ -266,7 +266,7 @@ function App() {
             </div>
           ))}
 
-          <div>
+          <div className="mapping-field">
             <label htmlFor="valid_status">Successful Status</label>
 
             <select
@@ -290,7 +290,7 @@ function App() {
             </select>
           </div>
 
-          <div>
+          <div className="mapping-field">
             <label htmlFor="cancelled_status">Cancelled Status</label>
 
             <select
@@ -325,11 +325,37 @@ function App() {
     );
   }
 
+  function startOver() {
+    setUploadedFile(null);
+    setUploadResult(null);
+    setStatusValues([]);
+
+    setMapping({
+      transaction_date: "",
+      revenue: "",
+      region: "",
+      status: "",
+      valid_status: "",
+      cancelled_status: "",
+    });
+
+    setQuestion("");
+    setAnswer("");
+    setUploadError("");
+    setStep("upload");
+  }
+
   return (
     <main>
       <h1>AI Data Analyst</h1>
 
       <p>Ask questions about your business data.</p>
+
+      {uploadResult && (
+        <p className="dataset-label">
+          Analyzing: <strong>{uploadResult.filename}</strong>
+        </p>
+      )}
 
       <textarea
         value={question}
@@ -337,16 +363,29 @@ function App() {
         placeholder="Example: How did revenue perform on September 20, 2026?"
       />
 
-      <button onClick={askAnalyst} disabled={loading}>
-        {loading ? "Analyzing..." : "Ask Analyst"}
-      </button>
+      <div className="analyst-actions">
+        <button onClick={askAnalyst} disabled={loading}>
+          {loading ? "Analyzing..." : "Ask Analyst"}
+        </button>
+
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={startOver}
+        >
+          Analyze Another Dataset
+        </button>
+      </div>
 
       {answer && (
         <section>
           <h2>Analyst</h2>
+
           <ReactMarkdown>{answer}</ReactMarkdown>
         </section>
       )}
+
+      
     </main>
   );
 }

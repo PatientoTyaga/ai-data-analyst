@@ -34,6 +34,8 @@ main > p {
   color: #667085;
 }
 
+/* Forms */
+
 textarea {
   display: block;
   width: 100%;
@@ -47,10 +49,37 @@ textarea {
   background: white;
 }
 
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: #475467;
 }
+
+/* Mapping fields */
+
+.mapping-field {
+  margin-bottom: 24px;
+}
+
+.mapping-field label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.mapping-field select {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: white;
+  color: #172033;
+  font: inherit;
+}
+
+/* Buttons */
 
 button {
   margin-top: 16px;
@@ -69,6 +98,35 @@ button:disabled {
   opacity: 0.6;
 }
 
+.analyst-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.analyst-actions button {
+  margin-top: 0;
+}
+
+.secondary-button {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 11px 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: transparent;
+  color: #344054;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #f9fafb;
+}
+
+/* Cards / sections */
+
 section {
   margin-top: 40px;
   padding: 24px;
@@ -80,4 +138,32 @@ section {
 
 section h2 {
   margin-top: 0;
+}
+
+.dataset-label {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #667085;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  main {
+    padding: 40px 0;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .analyst-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .analyst-actions button {
+    width: 100%;
+  }
 }
