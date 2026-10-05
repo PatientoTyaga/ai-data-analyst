@@ -1,3 +1,11 @@
+## Live Demo
+
+🚀 **Live Application:** https://ai-data-analyst-1-rnvy.onrender.com
+
+The deployed version is intended for portfolio demonstration using non-sensitive sample data.
+
+> **Note:** The demo currently uses Render's ephemeral filesystem. Uploaded CSV files and the local SQLite database may be reset when the backend restarts or redeploys. Do not upload sensitive or production business data.
+
 # AI Data Analyst
 
 An AI-powered data analysis prototype that allows users to upload business data, map their dataset schema, and ask business questions in natural language.
@@ -462,6 +470,7 @@ Current limitations include:
 - No direct SQL, BigQuery, Athena, or warehouse integrations
 - Limited predefined analytical tools
 - LLM usage depends on external provider availability and quotas
+- The hosted demo uses ephemeral storage, so uploaded datasets and SQLite metadata may be lost after service restarts or redeployments.
 
 A production version would associate every dataset with an authenticated organization and enforce dataset ownership server-side.
 
