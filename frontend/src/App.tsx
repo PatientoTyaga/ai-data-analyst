@@ -84,6 +84,7 @@ function App() {
         },
         body: JSON.stringify({
           dataset_id: uploadResult.dataset_id,
+          original_filename: uploadResult.filename,
           ...mapping,
         }),
       });

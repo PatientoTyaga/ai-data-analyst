@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from app.repository import BusinessRepository
 from app.agent import ask_agent
-from app.database import initialize_database
+from app.database import initialize_database, save_dataset, get_dataset
 from pathlib import Path
 from uuid import uuid4
 
@@ -26,14 +26,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-dataset_registry = {}
-
 class ColumnValuesRequest(BaseModel):
     dataset_id: str
     column: str
 
 class MappingRequest(BaseModel):
     dataset_id: str
+    original_filename: str
     transaction_date: str
     revenue: str
     region: str
@@ -82,7 +81,7 @@ def get_column_values(request: ColumnValuesRequest):
     
 @app.post("/ask", response_model=AskResponse)
 def ask_question(request: AskRequest):
-    dataset = dataset_registry.get(request.dataset_id)
+    dataset = get_dataset(request.dataset_id)
 
     if not dataset:
         raise HTTPException(
@@ -183,10 +182,12 @@ def save_mapping(request: MappingRequest):
         "cancelled_status": request.cancelled_status,
     }
     
-    dataset_registry[request.dataset_id] = {
-        "file_path": str(file_path),
-        "mapping": mapping
-    }
+    save_dataset(
+        dataset_id=request.dataset_id,
+        original_filename=request.original_filename,
+        file_path=str(file_path),
+        mapping=mapping
+    )
 
     return {
         "dataset_id": request.dataset_id,

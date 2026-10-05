@@ -33,3 +33,73 @@ def initialize_database():
 
     connection.commit()
     connection.close()
+    
+def save_dataset(
+    dataset_id: str,
+    original_filename: str,
+    file_path: str,
+    mapping: dict
+):
+    connection = get_connection()
+
+    connection.execute(
+        """
+        INSERT OR REPLACE INTO datasets (
+            dataset_id,
+            original_filename,
+            file_path,
+            transaction_date,
+            revenue,
+            region,
+            status,
+            valid_status,
+            cancelled_status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            dataset_id,
+            original_filename,
+            file_path,
+            mapping["transaction_date"],
+            mapping["revenue"],
+            mapping["region"],
+            mapping["status"],
+            mapping["valid_status"],
+            mapping["cancelled_status"],
+        )
+    )
+
+    connection.commit()
+    connection.close()
+    
+def get_dataset(dataset_id: str):
+    connection = get_connection()
+
+    row = connection.execute(
+        """
+        SELECT *
+        FROM datasets
+        WHERE dataset_id = ?
+        """,
+        (dataset_id,)
+    ).fetchone()
+
+    connection.close()
+
+    if row is None:
+        return None
+
+    return {
+        "dataset_id": row["dataset_id"],
+        "original_filename": row["original_filename"],
+        "file_path": row["file_path"],
+        "mapping": {
+            "transaction_date": row["transaction_date"],
+            "revenue": row["revenue"],
+            "region": row["region"],
+            "status": row["status"],
+            "valid_status": row["valid_status"],
+            "cancelled_status": row["cancelled_status"],
+        }
+    }
