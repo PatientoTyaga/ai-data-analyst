@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from app.repository import BusinessRepository
 from app.agent import ask_agent
+from app.database import initialize_database
 from pathlib import Path
 from uuid import uuid4
 
@@ -14,6 +15,8 @@ app = FastAPI(
     title="AI Data Analyst API",
     version="1.0.0"
 )
+
+initialize_database()
 
 app.add_middleware(
     CORSMiddleware,
