@@ -3,4 +3,4 @@
 __pycache__/
 *.pyc
 data/uploads/
-data/app.db
+data/app.db.DS_Store
