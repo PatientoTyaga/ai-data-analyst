@@ -73,6 +73,37 @@ get_cancellations_by_region()
 
 The calculations are performed by application code rather than asking the LLM to calculate directly from the raw dataset.
 
+## Demo
+
+### Multi-Step Business Analysis
+
+The agent can answer questions that require multiple analytical operations in a single request.
+
+For example, the following question requires revenue analysis, historical comparison, cancellation analysis, and regional breakdown:
+
+> What was our revenue on September 20, 2026, how does it compare to the previous 2-day average ending September 19, and how many cancellations did we have on September 20 and in which region?
+
+![Company A multi-step analysis](docs/images/company-a-analysis.png)
+
+### Same Agent, Different Dataset Schema
+
+The same application can analyze another company's dataset without changing the agent or analytical tools.
+
+Company B uses a different schema:
+
+- `created_at` instead of `transaction_date`
+- `total_price` instead of `amount`
+- `location` instead of `region`
+- `order_state` instead of `status`
+
+After mapping those fields through the onboarding interface, the same question-and-analysis workflow works without modifying the analytics code.
+
+![Company B analysis in progress](docs/images/company-b-analyzing.png)
+
+The resulting analysis uses the mapped Company B dataset:
+
+![Company B multi-step analysis](docs/images/company-b-analysis.png)
+
 ## Architecture
 
 ```text
